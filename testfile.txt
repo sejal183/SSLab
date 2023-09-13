@@ -1,0 +1,4 @@
+Original fd:  3
+Duplicate fd:  4
+Duplicate fd 2: 3
+Fcntl:  5
