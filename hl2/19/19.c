@@ -1,3 +1,13 @@
+/*
+============================================================================
+Name : 19
+Author :Sejal Khandelwal
+Description : Create a FIFO file by
+a. mknod system call
+b. mkfifo library function
+Date: 10-october-2023
+============================================================================
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>

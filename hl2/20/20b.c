@@ -1,3 +1,11 @@
+/*
+============================================================================
+Name : 20
+Author :Swarnim Kukreti
+Description : Write two programs so that both can communicate by FIFO -Use one way communication(Reading).
+Date: 10-october-2023
+============================================================================
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

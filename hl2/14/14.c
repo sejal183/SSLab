@@ -1,49 +1,62 @@
-#include <stdio.h>
+/*
+============================================================================
+Name : 14
+Author :Sejal Khandelwal
+Description : Write a simple program to create a pipe, write to the pipe, read from pipe and display on
+the monitor.
+Date: 10-october-2023
+============================================================================
+*/
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <stdio.h>
+
 int main() {
     int pipe_fd[2];
+    char buffer[256];
+    pid_t child_pid;
 
     if (pipe(pipe_fd) == -1) {
-        perror("Pipe creation failed");
-        return 1;
+        perror("pipe");
+        exit(1);
     }
 
-    pid_t pid = fork();
+    child_pid = fork();
 
-    if (pid == -1) {
-        perror("Fork failed");
-        return 1;
+    if (child_pid == -1) {
+        perror("fork");
+        exit(1);
     }
 
-    if (pid == 0) {
+    if (child_pid == 0) { 
         close(pipe_fd[1]);
 
-        char message[100];
-        ssize_t bytes_read = read(pipe_fd[0], message, sizeof(message));
+        ssize_t bytes_read = read(pipe_fd[0], buffer, 256);
+
         if (bytes_read == -1) {
-            perror("Read from pipe failed");
-            return 1;
+            perror("read");
+            exit(1);
         }
-        close(pipe_fd[0]);
 
-        printf("Child process received: %s\n", message);
-    } else {
-        close(pipe_fd[0]);
+        printf("Child Process: Received data from the pipe: %s", buffer);
 
-        char message[] = "Hello, pipe!";
-        ssize_t bytes_written = write(pipe_fd[1], message, strlen(message) + 1);
+        close(pipe_fd[0]);
+    } else {  
+     	close(pipe_fd[0]);
+
+        char message[256];
+	ssize_t bytes_read = read(1, message, 256);
+
+        ssize_t bytes_written = write(pipe_fd[1], message, strlen(message));
+
         if (bytes_written == -1) {
-            perror("Write to pipe failed");
-            return 1;
+            perror("write");
+            exit(1);
         }
+
+        printf("Parent Process: Sent data to the pipe: %s", message);
+
         close(pipe_fd[1]);
-
-        wait(NULL);
-
-        printf("Parent process sent: %s\n", message);
     }
 
     return 0;

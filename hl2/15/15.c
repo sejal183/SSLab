@@ -1,3 +1,11 @@
+/*
+============================================================================
+Name : 15
+Author :Sejal Khandelwal
+Description : Write a simple program to send some data from parent to the child process.
+Date: 10-october-2023
+============================================================================
+*/
 #include<unistd.h>
 #include<stdio.h>
 int main(){
