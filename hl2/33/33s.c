@@ -1,3 +1,11 @@
+/*
+ * ============================================================================
+ Name : 33c.c
+ Author : Sejal Khandelwal
+ Description : Write a program to communicate between two machines using socket.
+ Date: 11th OCT, 2023.
+============================================================================
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

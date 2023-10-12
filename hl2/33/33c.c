@@ -1,3 +1,11 @@
+/*
+ * ============================================================================
+ Name : 33.c
+ Author : Sejal Khandelwal
+ Description : Write a program to communicate between two machines using socket.
+ Date: 11th OCT, 2023.
+============================================================================
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -19,7 +27,7 @@ int main() {
     // Set up the server address structure
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(8080);
-    serverAddr.sin_addr.s_addr = inet_addr("8080"); // Replace with the IP address of Machine 1
+    serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
 
     // Connect to the server
     if (connect(clientSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0) {
@@ -34,7 +42,7 @@ int main() {
 
     // Receive a response from the server
     recv(clientSocket, buffer, sizeof(buffer), 0);
-    printf("Received from server: %s\n");
+    printf("Received from server: \n");
 
     // Close the socket
     close(clientSocket);
