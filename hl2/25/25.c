@@ -21,14 +21,12 @@ h. pid of the msgsnd and msgrcv
 #include <time.h>
 
 int main() {
-    // Create a key for the message queue (you can use an existing key or generate a unique one).
     key_t key = ftok("/tmp", 'a');
     if (key == -1) {
         perror("ftok");
         return 1;
     }
 
-    // Get the message queue identifier.
     int msqid = msgget(key, 0666 | IPC_CREAT);
     if (msqid == -1) {
         perror("msgget");

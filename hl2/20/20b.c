@@ -1,7 +1,7 @@
 /*
 ============================================================================
 Name : 20
-Author :Swarnim Kukreti
+Author :Sejal Khandelwal
 Description : Write two programs so that both can communicate by FIFO -Use one way communication(Reading).
 Date: 10-october-2023
 ============================================================================
@@ -16,7 +16,7 @@ Date: 10-october-2023
 
 int main() {
     // Open the FIFO for reading
-    char *fifoPath = "myfifo";  // Replace with your desired FIFO name
+    char *fifoPath = "myfifo";
     int fd = open(fifoPath, O_RDONLY);
     if (fd == -1) {
         perror("open");

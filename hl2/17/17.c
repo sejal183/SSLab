@@ -31,8 +31,6 @@ int main() {
     if (child_pid == 0) {  
         close(pipe_fd[0]);  
 
-        //dup(pipe_fd[1]); (error)
-        //dup2(pipe_fd[1], STDOUT_FILENO);
 	fcntl(pipe_fd[1], F_SETFD, FD_CLOEXEC);  
         dup2(pipe_fd[1], STDOUT_FILENO);	
         
@@ -44,8 +42,7 @@ int main() {
     } else { 
         close(pipe_fd[1]); 
         
-	//dup(pipe_fd[0]);  (error)
-	//dup2(pipe_fd[0], STDIN_FILENO);
+
 	fcntl(pipe_fd[0], F_SETFD, FD_CLOEXEC);  
         dup2(pipe_fd[0], STDIN_FILENO);
         

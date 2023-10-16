@@ -6,7 +6,8 @@ Description : Write two programs so that both can communicate by FIFO -Use one w
 (writing)
 Date: 10-october-2023
 ============================================================================
-*/#include <stdio.h>
+*/
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -16,10 +17,9 @@ Date: 10-october-2023
 
 int main() {
     // Create or open the FIFO (named pipe)
-    char *fifoPath = "myfifo";  // Replace with your desired FIFO name
-    mkfifo(fifoPath, 0666);     // Create FIFO with read and write permissions
+    char *fifoPath = "myfifo"; 
+    mkfifo(fifoPath, 0666);
 
-    // Open the FIFO for writing
     int fd = open(fifoPath, O_WRONLY);
     if (fd == -1) {
         perror("open");
@@ -37,7 +37,6 @@ int main() {
 
     printf("Message sent: %s\n", message);
 
-    // Close the FIFO
     close(fd);
 
     return 0;

@@ -1,50 +1,50 @@
 /*
-============================================================================
-Name : 21
-Author :Sejal Khandelwal
-Description : Write two programs so that both can communicate by FIFO -Use two way communications.(Writing)
-Date: 10-october-2023
+ * ============================================================================
+ Name : 21_write.c
+ Author : Sejal Khandelwal
+ Description : Write two programs so that both can communicate by FIFO -Use two way communications.
+ Date: 10th OCT, 2023.
 ============================================================================
 */
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-
-#define FIFO_PATH "myfifo" // Replace with your desired FIFO name
+#include <string.h>
 
 int main() {
+    const char *fifo_path = "myfifo";
     int fd;
-    char message[256];
 
-    // Create or open the FIFO for writing
-    mkfifo(FIFO_PATH, 0666);
-    fd = open(FIFO_PATH, O_WRONLY);
-
+    
+    fd = open(fifo_path, O_WRONLY);
     if (fd == -1) {
         perror("open");
         exit(EXIT_FAILURE);
     }
 
+    char message[100];
+
     while (1) {
-        printf("Enter a message (or type 'exit' to quit): ");
+        printf("Enter a message to send (or 'exit' to quit): ");
         fgets(message, sizeof(message), stdin);
 
-        // Remove newline character from the message
-        message[strlen(message) - 1] = '\0';
-
-        if (strcmp(message, "exit") == 0) {
-            break;
+       
+        if (write(fd, message, strlen(message) + 1) == -1) {
+            perror("write");
+            close(fd);
+            exit(EXIT_FAILURE);
         }
 
-        write(fd, message, strlen(message));
+        if (strcmp(message, "exit\n") == 0) {
+            printf("Writer exiting...\n");
+            close(fd);
+            break;  
+        }
     }
-
-    close(fd);
 
     return 0;
 }
+
 

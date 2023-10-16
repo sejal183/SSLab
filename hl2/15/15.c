@@ -6,35 +6,58 @@ Description : Write a simple program to send some data from parent to the child 
 Date: 10-october-2023
 ============================================================================
 */
-#include<unistd.h>
-#include<stdio.h>
-int main(){
-	int fd[2];
-	pipe(fd);
-	char message = "Hello from parent";
-	pid_t pid = fork();
-	if(pid == 0){
-		close(fd[1]);
-		char message[100];
-		ssize_t r = read(fd[0],message,sizeof(message));
-		if(r==-1) {
-			perror("Read failed");
-			return -1;
-		}
-		close(fd[0]);
-		printf("child recieved%s\n",message);
-	}
-	else{
-		close(fd[0]);
-		char message[] = "HEllo from parent";
-		ssize_t w = write(fd[1],message,sizeof(message));
-		if(w==-1){
-			perror("Write failed");
-			return -1;
-		}
-		close(fd[1]);
-		wait(NULL);
-		printf("Parent sent%s\n" ,message);
-	}
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
+int main() {
+    int pipe_fd[2];
+    char buffer[256];
+    pid_t child_pid;
+
+    if (pipe(pipe_fd) == -1) {
+        perror("pipe");
+        exit(1);
+    }
+
+    child_pid = fork();
+
+    if (child_pid == -1) {
+        perror("fork");
+        exit(1);
+    }
+
+    if (child_pid == 0) {
+        close(pipe_fd[1]);
+
+        ssize_t bytes_read = read(pipe_fd[0], buffer, 256);
+
+        if (bytes_read == -1) {
+            perror("read");
+            exit(1);
+        }
+
+        printf("Child Process: Received data from the parent: %s", buffer);
+
+        close(pipe_fd[0]);
+    } else { 
+        close(pipe_fd[0]);
+
+        const char *message = "Hello from Parent to Child!\n";
+
+        ssize_t bytes_written = write(pipe_fd[1], message, strlen(message));
+
+        if (bytes_written == -1) {
+            perror("write");
+            exit(1);
+        }
+
+        printf("Parent Process: Sent data to the child: %s", message);
+
+        close(pipe_fd[1]);
+    }
+
+    return 0;
 }
+

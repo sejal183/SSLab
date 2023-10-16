@@ -37,7 +37,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    // Change the permission to read and write for owner and group, no permissions for others
+    // Change the permission to read and write for owner,  no permissions for others
     msg_info.msg_perm.mode = 0600;
 
     // Set the new attributes for the message queue

@@ -14,11 +14,11 @@
 #include <sys/msg.h>
 
 int main() {
-    int msqid;       // Message queue ID
-    key_t key;       // Message queue key
+    int msqid;
+    key_t key;  
 
     // Generate a unique key for the message queue
-    key = ftok("/home/ubuntu22/sslab/hl2/24", 'A');  // Replace "message_queue_key" with your own key identifier
+    key = ftok("/home/ubuntu22/sslab/hl2/24", 'A');
 
     if (key == -1) {
         perror("ftok");

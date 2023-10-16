@@ -1,54 +1,54 @@
 /*
-============================================================================
-Name : 21
-Author :Sejal Khandelwal
-Description :Write two programs so that both can communicate by FIFO -Use two way communications.(Reading)
-Date: 10-october-2023
+ * ============================================================================
+ Name : 21_read.c
+ Author : Sejal Khandelwal
+ Description : Write two programs so that both can communicate by FIFO -Use two way communications.
+ Date: 10th OCT, 2023.
 ============================================================================
 */
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-
-#define FIFO_PATH "myfifo" // Replace with your desired FIFO name
+#include <string.h>
 
 int main() {
+    const char *fifo_path = "myfifo";
     int fd;
-    char message[256];
+    char buffer[100];
 
-    // Open the FIFO for reading
-    fd = open(FIFO_PATH, O_RDONLY);
-
+  
+    fd = open(fifo_path, O_RDONLY);
     if (fd == -1) {
         perror("open");
         exit(EXIT_FAILURE);
     }
 
-    while (1) {
-        ssize_t bytesRead = read(fd, message, sizeof(message));
+    printf("Waiting for messages...\n");
 
-        if (bytesRead == -1) {
+    while (1) {
+        
+        ssize_t bytes_read = read(fd, buffer, sizeof(buffer));
+        if (bytes_read == -1) {
             perror("read");
             close(fd);
             exit(EXIT_FAILURE);
         }
 
-        // Null-terminate the received data to treat it as a string
-        message[bytesRead] = '\0';
+        printf("Received message: %s", buffer);
 
-        printf("Received message: %s\n", message);
-
-        if (strcmp(message, "exit") == 0) {
-            break;
+     
+        if (strcmp(buffer, "exit\n") == 0) {
+            printf("Reader exiting...\n");
+            break; 
         }
     }
 
+   
     close(fd);
 
     return 0;
 }
+
 

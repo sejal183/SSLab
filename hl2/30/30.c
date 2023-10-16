@@ -18,7 +18,6 @@ d. remove the shared memory
 #include <sys/shm.h>
 
 int main() {
-    // Create a key for the shared memory (you can use an existing key or generate a unique one).
     key_t key = ftok("/tmp", 'a');
     if (key == -1) {
         perror("ftok");
@@ -52,7 +51,7 @@ int main() {
     // Attach the shared memory with read-only permissions (O_RDONLY).
     shmaddr = (char *)shmat(shmid, NULL, SHM_RDONLY);
     if (shmaddr == (void *)-1) {
-        perror("shmat (read-only)");
+        printf("shmat (read-only)");
         return 1;
     }
 

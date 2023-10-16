@@ -1,98 +1,74 @@
 /*
-============================================================================
-Name : 16
-Author :Sejal Khandelwal
-Description : Write a program to send and receive data from parent to child vice versa. Use two way
+ * ============================================================================
+ Name : 16.c
+ Author : Sejal Khandelwal
+ Description : Write a program to send and receive data from parent to child vice versa. Use two way
 communication.
-Date: 10-october-2023
+ Date: 10th OCT, 2023.
 ============================================================================
 */
+#include <sys/types.h>
+#include <sys/wait.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <ctype.h>
+
 int main() {
-    int pipe_parent_to_child[2];
-    int pipe_child_to_parent[2];
-    pid_t pid;
+    int parent_to_child_pipe[2];
+    int child_to_parent_pipe[2];
+    pid_t child_pid;
 
-    if (pipe(pipe_parent_to_child) == -1 || pipe(pipe_child_to_parent) == -1) {
-        perror("Pipe creation failed");
+    if (pipe(parent_to_child_pipe) == -1 || pipe(child_to_parent_pipe) == -1) {
+        perror("pipe");
         exit(EXIT_FAILURE);
     }
 
-    pid = fork();
+    child_pid = fork();
 
-    if (pid < 0) {
-        perror("Fork failed");
+    if (child_pid == -1) {
+        perror("fork");
         exit(EXIT_FAILURE);
     }
 
-    if (pid == 0) { // Child process
-        close(pipe_parent_to_child[1]);
-        close(pipe_child_to_parent[0]);
+    if (child_pid == 0) { 
+        close(parent_to_child_pipe[1]); 
+        close(child_to_parent_pipe[0]); 
 
-        char message[100];
+        char message_from_parent[100];
+        char message_to_parent[] = "Message from child: Hello, parent!";
 
-        while (1) {
-            if (read(pipe_parent_to_child[0], message, sizeof(message)) == -1) {
-                perror("Read from parent failed");
-                exit(EXIT_FAILURE);
-            }
-
-            if (strcmp(message, "exit\n") == 0) {
-                break;
-            }
-
-            printf("Child received: %s", message);
-
-            // Process the message (e.g., convert to uppercase)
-            int len = strlen(message);
-            for (int i = 0; i < len; i++) {
-                message[i] = toupper(message[i]);
-            }
-
-            if (write(pipe_child_to_parent[1], message, len) == -1) {
-                perror("Write to parent failed");
-                exit(EXIT_FAILURE);
-            }
+       
+        ssize_t bytes_read = read(parent_to_child_pipe[0], message_from_parent, sizeof(message_from_parent));
+        if (bytes_read > 0) {
+            printf("Child Process: Received data from parent: %s\n", message_from_parent);
         }
 
-        close(pipe_parent_to_child[0]);
-        close(pipe_child_to_parent[1]);
+        
+        write(child_to_parent_pipe[1], message_to_parent, strlen(message_to_parent));
+
+        close(parent_to_child_pipe[0]);
+        close(child_to_parent_pipe[1]);
         exit(EXIT_SUCCESS);
-    } else { // Parent process
-        close(pipe_parent_to_child[0]);
-        close(pipe_child_to_parent[1]);
+    } else {
+        close(parent_to_child_pipe[0]); 
+        close(child_to_parent_pipe[1]); 
 
-        char message[100];
+        char message_to_child[] = "Message from parent: Hi, child!";
+        char message_from_child[100];
 
-        while (1) {
-            printf("Enter a message for the child (or 'exit' to quit): ");
-            fgets(message, sizeof(message), stdin);
+     
+        write(parent_to_child_pipe[1], message_to_child, strlen(message_to_child));
 
-            if (write(pipe_parent_to_child[1], message, strlen(message)) == -1) {
-                perror("Write to child failed");
-                exit(EXIT_FAILURE);
-            }
-
-            if (strcmp(message, "exit\n") == 0) {
-                break;
-            }
-
-            if (read(pipe_child_to_parent[0], message, sizeof(message)) == -1) {
-                perror("Read from child failed");
-                exit(EXIT_FAILURE);
-            }
-
-            printf("Parent received: %s", message);
+        
+        ssize_t bytes_read = read(child_to_parent_pipe[0], message_from_child, sizeof(message_from_child));
+        if (bytes_read > 0) {
+            printf("Parent Process: Received data from child: %s\n", message_from_child);
         }
 
-        close(pipe_parent_to_child[1]);
-        close(pipe_child_to_parent[0]);
-        wait(NULL);
-        exit(EXIT_SUCCESS);
+        close(parent_to_child_pipe[1]);
+        close(child_to_parent_pipe[0]);
+        wait(NULL); 
     }
 
     return 0;

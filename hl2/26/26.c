@@ -3,7 +3,7 @@
  Name : 26.c
  Author : Sejal Khandelwal
  Description : Write a program to send messages to the message queue. Check $ipcs -q
- Date: 7th OCT, 2023.
+ Date: 10th OCT, 2023.
 ============================================================================
 */
 
@@ -25,14 +25,12 @@ int main() {
     key_t key;
     struct msg_buffer msg;
 
-    // Generate a unique key for the message queue (use the same key as before)
     key = ftok("/tmp", 'A');
     if (key == -1) {
         perror("ftok");
         exit(EXIT_FAILURE);
     }
 
-    // Get the message queue ID
     msgqid = msgget(key, 0666 | IPC_CREAT);
     if (msgqid == -1) {
         perror("msgget");
